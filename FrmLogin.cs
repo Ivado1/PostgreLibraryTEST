@@ -7,16 +7,18 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.Data.SqlClient;
 using System.Windows;
 using System.Configuration;
 using System.Windows.Forms;
+using System.Xml;
 using System.Diagnostics;
 
 namespace Library_App
 {
     public partial class FrmLogin : Form
     {
-        string strConnection = "Server=; port=; user id=; password=; database=;"; //put yours values (method not safe use only for test)
+        string strConnection = "Server=localhost ; port=5432 ; user id=postgres ; password=postgres ; database=testdb ;";
 
         NpgsqlConnection connectNpg = new NpgsqlConnection();
         NpgsqlDataReader reader;
@@ -46,8 +48,8 @@ namespace Library_App
             loginField.Text = string.Empty;
             passField.Text = string.Empty;
 
-            //loginField.Text = "ADMIN";  //For test
-            //passField.Text = "123";   //For test
+            loginField.Text = "ADMIN";  //For test
+            passField.Text = "123";   //For test
         }
 
         private void buttonLogin_Click(object sender, EventArgs e)
@@ -55,16 +57,18 @@ namespace Library_App
             openConnect();
             if (loginField.Text.Trim() != string.Empty || passField.Text.Trim() != string.Empty)
             {
-                NpgsqlCommand comm = new NpgsqlCommand("SELECT * FROM users", connectNpg);
+                NpgsqlCommand comm = new NpgsqlCommand("SELECT user_id,login,pass FROM users", connectNpg);
                 reader = comm.ExecuteReader();
                 
                 while (reader.Read())
                 {
                     if (loginField.Text == reader["login"].ToString() && passField.Text==reader["pass"].ToString())
                     {
+                        //MessageBox.Show("Correct");
+
                         if (reader["admin"].ToString()=="True")
                         {
-                            MessageBox.Show("Admin Enter");
+                            //MessageBox.Show("Admin Enter");
                             this.Hide();
                             FrmShowData newWindow = new FrmShowData();
                             newWindow.ShowDialog();
@@ -72,7 +76,7 @@ namespace Library_App
                         }
                         else
                         {
-                            MessageBox.Show("User Enter");
+                            //MessageBox.Show("User Enter");
                             this.Hide();
                             FrmTable newWindow = new FrmTable();
                             newWindow.ShowDialog();
@@ -82,7 +86,9 @@ namespace Library_App
                 }
                 if (comm != null) comm.Dispose();
             }
+
             closeConnect();
         }
+
     }
 }
