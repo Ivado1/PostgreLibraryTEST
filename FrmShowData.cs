@@ -45,7 +45,7 @@ namespace Library_App
             postgreConnect.ConnectionString = vStrConnection;
             OpenConnect();
 
-            postgreCommand = new NpgsqlCommand("SELECT * FROM book", postgreConnect);
+            postgreCommand = new NpgsqlCommand("SELECT book_id,title,author_name,author_lastname,published, borrowed, publisher_id  FROM book", postgreConnect);
             postgreReader = postgreCommand.ExecuteReader();
             
             if (postgreReader.HasRows)
@@ -55,7 +55,7 @@ namespace Library_App
                 dataGridView_slct_book.DataSource = dt;
             }
 
-            postgreCommand = new NpgsqlCommand("SELECT * FROM users", postgreConnect);
+            postgreCommand = new NpgsqlCommand("SELECT user_id,login,pass,admin,debtor FROM users", postgreConnect);
             postgreReader = postgreCommand.ExecuteReader();
 
             if (postgreReader.HasRows)
@@ -92,7 +92,7 @@ namespace Library_App
                 error_text_insert.Text = "Заполни значения полей";
             }
 
-            postgreCommand = new NpgsqlCommand("SELECT * FROM publisher", postgreConnect);
+            postgreCommand = new NpgsqlCommand("SELECT publisher_id, org_name,address FROM publisher", postgreConnect);
             postgreReader = postgreCommand.ExecuteReader();
 
             if (postgreReader.HasRows)
@@ -165,13 +165,13 @@ namespace Library_App
             switch (comboBox_Tables.SelectedItem)
             {
                 case "book":
-                    postgreCommand = new NpgsqlCommand("SELECT * FROM book", postgreConnect);
+                    postgreCommand = new NpgsqlCommand("SELECT book_id,title,author_name,author_lastname,published, borrowed, publisher_id  FROM book", postgreConnect);
                     break;
                 case "publisher":
-                    postgreCommand = new NpgsqlCommand("SELECT * FROM publisher", postgreConnect);
+                    postgreCommand = new NpgsqlCommand("SELECT publisher_id, org_name,address FROM publisher", postgreConnect);
                     break;
                 case "users":
-                    postgreCommand = new NpgsqlCommand("SELECT * FROM users", postgreConnect);
+                    postgreCommand = new NpgsqlCommand("SELECT user_id,login,pass,admin,debtor FROM users", postgreConnect);
                     break;
                 default:error_text_insert.Text = "Нет такой базы данных";
                     break;
@@ -198,7 +198,7 @@ namespace Library_App
 
             if (!string.IsNullOrEmpty(text_ID_book_SLCT.Text) && !string.IsNullOrWhiteSpace(text_ID_book_SLCT.Text))
             {
-                postgreCommand = new NpgsqlCommand("SELECT * FROM book WHERE book_id=@book_id", postgreConnect);
+                postgreCommand = new NpgsqlCommand("SELECT book_id,title,author_name,author_lastname,published, borrowed, publisher_id FROM book WHERE book_id=@book_id", postgreConnect);
                 postgreCommand.Parameters.AddWithValue("book_id", Convert.ToInt32(text_ID_book_SLCT.Text));
                 postgreReader=postgreCommand.ExecuteReader();
                 
@@ -216,10 +216,7 @@ namespace Library_App
             }
             else if (!string.IsNullOrEmpty(text_Title_SELECT.Text) && !string.IsNullOrWhiteSpace(text_Title_SELECT.Text))
             {
-                postgreCommand = new NpgsqlCommand("SELECT * FROM book WHERE title=@title", postgreConnect);
-                //postgreCommand = new NpgsqlCommand("SELECT * FROM book WHERE title LIKE @title", postgreConnect);
-                //postgreCommand = new NpgsqlCommand("SELECT * FROM book WHERE title LIKE '%A%'", postgreConnect);
-                //postgreCommand = new NpgsqlCommand("SELECT * FROM book WHERE title LIKE @titleT ", postgreConnect);
+                postgreCommand = new NpgsqlCommand("SELECT book_id,title,author_name,author_lastname,published, borrowed, publisher_id FROM book WHERE title=@title", postgreConnect);
 
                 postgreCommand.Parameters.AddWithValue("title", text_Title_SELECT.Text);
                 postgreReader = postgreCommand.ExecuteReader();
@@ -256,7 +253,7 @@ namespace Library_App
             }
             else
             {
-                postgreCommand = new NpgsqlCommand("SELECT * FROM book",postgreConnect);
+                postgreCommand = new NpgsqlCommand("SELECT book_id,title,author_name,author_lastname,published, borrowed, publisher_id FROM book", postgreConnect);
                 postgreReader = postgreCommand.ExecuteReader();
 
                 if (postgreReader.HasRows)
@@ -300,7 +297,7 @@ namespace Library_App
                 error_insrtbook.Text=("заполни все поля");
             }
 
-            postgreCommand = new NpgsqlCommand("SELECT * FROM book", postgreConnect);
+            postgreCommand = new NpgsqlCommand("SELECT book_id,title,author_name,author_lastname,published, borrowed, publisher_id FROM book", postgreConnect);
             postgreReader = postgreCommand.ExecuteReader();
 
             if (postgreReader.HasRows)
@@ -344,7 +341,7 @@ namespace Library_App
 
             if (!string.IsNullOrEmpty(text_id_user_slct.Text))
             {
-                postgreCommand = new NpgsqlCommand("SELECT * FROM users WHERE user_id=@id", postgreConnect);
+                postgreCommand = new NpgsqlCommand("SELECT book_id,title,author_name,author_lastname,published, borrowed, publisher_id FROM users WHERE user_id=@id", postgreConnect);
                 postgreCommand.Parameters.AddWithValue("id", Convert.ToInt32(text_id_user_slct.Text));
 
                 postgreReader = postgreCommand.ExecuteReader();
@@ -362,7 +359,7 @@ namespace Library_App
             }
             else
             {
-                postgreCommand = new NpgsqlCommand("SELECT * FROM users", postgreConnect);
+                postgreCommand = new NpgsqlCommand("SELECT user_id,login,pass,admin,debtor FROM users", postgreConnect);
                 postgreReader = postgreCommand.ExecuteReader();
 
                 if (postgreReader.HasRows)
@@ -382,7 +379,7 @@ namespace Library_App
         {
             OpenConnect();
 
-            postgreCommand = new NpgsqlCommand("SELECT * FROM borrow", postgreConnect);
+            postgreCommand = new NpgsqlCommand("SELECT title, author, borrow_date, return_date, user_id,login,borrow_id,book_id FROM borrow", postgreConnect);
             postgreReader = postgreCommand.ExecuteReader();
 
             if (postgreReader.HasRows)
@@ -452,7 +449,7 @@ namespace Library_App
 
             notice_msg.Visible = true;
             notice_msg.Text = "КНИГА № " + text_ID_book_SLCT.Text + " ВЫДАНА, ЧИТАТЕЛЮ ID № " + text_id_user_slct.Text;
-            //MessageBox.Show("КНИГА № " + text_ID_book_SLCT.Text + " ВЫДАНА, ЧИТАТЕЛЮ ID № " + text_id_user_slct.Text);
+            MessageBox.Show("КНИГА № " + text_ID_book_SLCT.Text + " ВЫДАНА, ЧИТАТЕЛЮ ID № " + text_id_user_slct.Text);
             if (postgreCommand != null) postgreCommand.Dispose();
             CloseConnect();
         }
